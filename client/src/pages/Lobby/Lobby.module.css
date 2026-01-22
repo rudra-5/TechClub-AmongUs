@@ -1,0 +1,105 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, var(--navy-blue) 0%, var(--black-soft) 100%);
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 60px 40px;
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pulseEffect {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.02);
+  }
+}
+
+.title {
+  font-size: 28px;
+  color: var(--cyan-bright);
+  margin-bottom: 40px;
+}
+
+.playerCard {
+  background: rgba(151, 125, 255, 0.1);
+  border: 2px solid var(--purple-primary);
+  border-radius: 15px;
+  padding: 30px;
+  margin-bottom: 30px;
+}
+
+.playerId {
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--purple-primary);
+  margin-bottom: 20px;
+  text-shadow: 0 0 20px rgba(151, 125, 255, 0.5);
+}
+
+.roleRestricted {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--lavender-light);
+  font-size: 18px;
+}
+
+.lockIcon {
+  font-size: 24px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--crewmate-green);
+  font-size: 14px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background: var(--crewmate-green);
+  border-radius: 50%;
+  animation: blink 2s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--purple-primary);
+  font-size: 24px;
+}

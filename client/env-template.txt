@@ -1,0 +1,11 @@
+# Client Configuration
+# Copy this file to .env and configure
+# Note: Vite requires VITE_ prefix for environment variables exposed to client
+
+# Server URL (backend API and Socket.io)
+# Default: http://localhost:3001
+VITE_SERVER_URL=http://localhost:3001
+
+# Client Port (optional, can also be set in vite.config.js)
+# Default: 3000
+VITE_CLIENT_PORT=3000

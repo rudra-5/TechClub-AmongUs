@@ -1,0 +1,9 @@
+# Server Configuration
+# Copy this file to .env and configure
+
+PORT=3001
+NODE_ENV=development
+
+# Client URL for CORS (frontend URL)
+# Default: http://localhost:3000
+CLIENT_URL=http://localhost:3000

@@ -1,0 +1,121 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: linear-gradient(135deg, var(--navy-blue) 0%, var(--black-soft) 100%);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.logo {
+  height: 80px;
+  width: auto;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--purple-primary);
+  text-shadow: 0 0 20px rgba(151, 125, 255, 0.5);
+}
+
+.loginCard {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.subtitle {
+  font-size: 24px;
+  color: var(--lavender-light);
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputGroup label {
+  color: var(--cyan-bright);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.select,
+.input {
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 2px solid rgba(151, 125, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.select:focus,
+.input:focus {
+  outline: none;
+  border-color: var(--purple-primary);
+  box-shadow: 0 0 10px rgba(151, 125, 255, 0.3);
+}
+
+.select option {
+  background: var(--black-soft);
+  color: white;
+}
+
+.error {
+  background: rgba(230, 57, 70, 0.2);
+  border: 1px solid var(--imposter-red);
+  color: var(--imposter-red);
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.submitBtn {
+  padding: 15px;
+  background: var(--purple-primary);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.submitBtn:hover {
+  background: var(--cyan-bright);
+  color: var(--black-soft);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(121, 240, 248, 0.4);
+}
+
+.submitBtn:active {
+  transform: translateY(0);
+}

@@ -1,0 +1,109 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--ghost-grey) 0%, var(--black-soft) 100%);
+  padding-bottom: 20px;
+  opacity: 0.8;
+}
+
+.header {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 3px solid var(--ghost-grey);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+}
+
+.identityBadge {
+  background: var(--ghost-grey);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 18px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ghostIcon {
+  font-size: 24px;
+}
+
+.timer {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--cyan-bright);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.instruction {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--lavender-light);
+  padding: 20px;
+  margin: 20px;
+  border-radius: 10px;
+  text-align: center;
+  border: 2px solid var(--ghost-grey);
+}
+
+.progressSection {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  margin: 20px;
+  border-radius: 12px;
+}
+
+.progressSection h3 {
+  color: var(--crewmate-green);
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.progressBar {
+  width: 100%;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 2px solid var(--crewmate-green);
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--crewmate-green), var(--crewmate-blue));
+  transition: width 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 18px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.body {
+  padding: 20px;
+}
+
+.sectionTitle {
+  color: var(--lavender-light);
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.loading {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--purple-primary);
+  font-size: 24px;
+}

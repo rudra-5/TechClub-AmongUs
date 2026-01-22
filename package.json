@@ -1,0 +1,19 @@
+{
+  "name": "amongus-uowd",
+  "version": "1.0.0",
+  "description": "Among Us game for UOWD Tech Club events",
+  "scripts": {
+    "install-all": "cd client && npm install && cd ../server && npm install",
+    "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\"",
+    "start-server": "cd server && npm start",
+    "start-client": "cd client && npm run dev",
+    "build": "cd client && npm run build",
+    "generate-qr": "cd server && node utils/qrGenerator.js"
+  },
+  "keywords": ["amongus", "game", "socket.io", "react"],
+  "author": "UOWD Tech Club",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
