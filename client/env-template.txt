@@ -3,7 +3,9 @@
 # Note: Vite requires VITE_ prefix for environment variables exposed to client
 
 # Server URL (backend API and Socket.io)
-# Default: http://localhost:3001
+# For development: http://localhost:3001
+# For production: Your Render backend URL (e.g., https://techclub-amongus.onrender.com)
+# IMPORTANT: Set this in Vercel environment variables for production deployment
 VITE_SERVER_URL=http://localhost:3001
 
 # Client Port (optional, can also be set in vite.config.js)

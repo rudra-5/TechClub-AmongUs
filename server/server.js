@@ -12,19 +12,35 @@ const { setupSocketHandlers } = require('./socket/handlers')
 const app = express()
 const server = http.createServer(app)
 
-// Get client URL from environment or use default
-const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000'
+// Get client URLs from environment or use defaults
+// Support multiple origins (comma-separated)
+const CLIENT_URLS = process.env.CLIENT_URL 
+  ? process.env.CLIENT_URL.split(',').map(url => url.trim())
+  : ['http://localhost:3000']
+
+console.log('Allowed origins:', CLIENT_URLS)
 
 const io = new Server(server, {
   cors: {
-    origin: CLIENT_URL,
-    methods: ['GET', 'POST']
+    origin: CLIENT_URLS,
+    methods: ['GET', 'POST'],
+    credentials: true
   }
 })
 
 // Middleware
 app.use(cors({
-  origin: CLIENT_URL,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true)
+    
+    if (CLIENT_URLS.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      console.warn(`Blocked by CORS: ${origin}`)
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   credentials: true
 }))
 app.use(express.json())
@@ -47,5 +63,5 @@ const PORT = process.env.PORT || 3001
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
   console.log(`Socket.io listening for connections`)
-  console.log(`CORS enabled for client: ${CLIENT_URL}`)
+  console.log(`CORS enabled for clients: ${CLIENT_URLS.join(', ')}`)
 })

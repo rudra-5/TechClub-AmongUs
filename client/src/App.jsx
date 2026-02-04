@@ -16,12 +16,22 @@ function App() {
   const [gameState, setGameState] = useState('waiting') // waiting, active, voting, ended
 
   useEffect(() => {
-    const serverUrl = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001'
-    const newSocket = io(serverUrl)
+    // Use environment variable or empty string (relative path for dev proxy)
+    const serverUrl = import.meta.env.VITE_SERVER_URL || ''
+    const newSocket = io(serverUrl, {
+      transports: ['websocket', 'polling'],
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000
+    })
     setSocket(newSocket)
 
     newSocket.on('connect', () => {
       console.log('Connected to server')
+    })
+
+    newSocket.on('connect_error', (error) => {
+      console.error('Socket connection error:', error)
     })
 
     newSocket.on('gameStateUpdate', (state) => {

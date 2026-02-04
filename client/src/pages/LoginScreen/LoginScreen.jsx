@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { apiCall } from '../../utils/api'
 import styles from './LoginScreen.module.css'
 
 function LoginScreen({ setPlayer }) {
@@ -13,9 +14,8 @@ function LoginScreen({ setPlayer }) {
     setError('')
 
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await apiCall('/api/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ playerId, passcode })
       })
 

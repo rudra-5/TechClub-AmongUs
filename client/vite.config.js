@@ -9,12 +9,18 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: process.env.VITE_SERVER_URL || 'http://localhost:3001',
-        changeOrigin: true
+        changeOrigin: true,
+        secure: false
       },
       '/socket.io': {
         target: process.env.VITE_SERVER_URL || 'http://localhost:3001',
-        ws: true
+        ws: true,
+        changeOrigin: true
       }
     }
+  },
+  define: {
+    // Ensure environment variables are properly embedded in production build
+    'import.meta.env.VITE_SERVER_URL': JSON.stringify(process.env.VITE_SERVER_URL)
   }
 })
