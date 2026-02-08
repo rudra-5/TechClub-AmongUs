@@ -10,7 +10,9 @@ function GhostDashboard({ player, socket, gameState }) {
   const [selectedTask, setSelectedTask] = useState(null)
 
   useEffect(() => {
-    if (socket) {
+    if (socket && player?.id) {
+      socket.emit('playerJoin', player.id)
+
       socket.on('ghostTasksUpdate', (mainTasks) => {
         setTasks(mainTasks)
       })
@@ -23,7 +25,7 @@ function GhostDashboard({ player, socket, gameState }) {
         setTimeRemaining(time)
       })
 
-      socket.emit('requestGhostTasks', player?.id)
+      socket.emit('requestGhostTasks', player.id)
     }
 
     return () => {
@@ -75,7 +77,7 @@ function GhostDashboard({ player, socket, gameState }) {
       <div className={styles.progressSection}>
         <h3>Global Progress</h3>
         <div className={styles.progressBar}>
-          <div 
+          <div
             className={styles.progressFill}
             style={{ width: `${globalProgress}%` }}
           >

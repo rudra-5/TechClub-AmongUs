@@ -22,7 +22,9 @@ function ImposterDashboard({ player, socket, gameState }) {
   }, [gameState, navigate])
 
   useEffect(() => {
-    if (socket) {
+    if (socket && player?.id) {
+      socket.emit('playerJoin', player.id)
+
       socket.on('tasksUpdate', (updatedTasks) => {
         setTasks(updatedTasks)
       })
@@ -43,8 +45,8 @@ function ImposterDashboard({ player, socket, gameState }) {
         setTeammates(imposterTeam)
       })
 
-      socket.emit('requestTasks', player?.id)
-      socket.emit('requestTeammates', player?.id)
+      socket.emit('requestTasks', player.id)
+      socket.emit('requestTeammates', player.id)
     }
 
     return () => {
@@ -63,7 +65,8 @@ function ImposterDashboard({ player, socket, gameState }) {
     if (showScanner) {
       scanner = new Html5QrcodeScanner('qr-reader', {
         fps: 10,
-        qrbox: { width: 250, height: 250 }
+        qrbox: { width: 250, height: 250 },
+        facingMode: "environment" // Use back camera directly
       })
 
       scanner.render(onScanSuccess, onScanError)
@@ -131,7 +134,7 @@ function ImposterDashboard({ player, socket, gameState }) {
       <div className={styles.progressSection}>
         <h3>Global Progress</h3>
         <div className={styles.progressBar}>
-          <div 
+          <div
             className={styles.progressFill}
             style={{ width: `${globalProgress}%` }}
           >
@@ -167,7 +170,7 @@ function ImposterDashboard({ player, socket, gameState }) {
         <div className={styles.scannerOverlay}>
           <div className={styles.scannerHeader}>
             <h2>Scan Victim's QR Code</h2>
-            <button 
+            <button
               className={styles.closeBtn}
               onClick={() => setShowScanner(false)}
             >

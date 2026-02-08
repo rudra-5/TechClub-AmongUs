@@ -46,7 +46,7 @@ function VerificationModal({ task, onClose, onVerify }) {
 
         <div className={styles.taskInfo}>
           <p className={styles.taskName}>{task.name}</p>
-          <p className={styles.taskRoom}>{task.room}</p>
+          {task.room && <p className={styles.taskRoom}>{task.room}</p>}
         </div>
 
         <div className={styles.instruction}>

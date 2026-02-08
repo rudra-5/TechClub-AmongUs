@@ -11,8 +11,8 @@ async function generatePlayerQRCodes() {
     fs.mkdirSync(qrDir, { recursive: true })
   }
 
-  // Generate QR code for each player (P01 to P30)
-  for (let i = 1; i <= 30; i++) {
+  // Generate QR code for each player (P01 to P12)
+  for (let i = 1; i <= 12; i++) {
     const playerId = `P${i.toString().padStart(2, '0')}`
     const qrPath = path.join(qrDir, `${playerId}.png`)
     

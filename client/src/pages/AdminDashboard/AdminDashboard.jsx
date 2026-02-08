@@ -31,11 +31,16 @@ function AdminDashboard({ socket }) {
         setTaskPins(pins)
       })
 
+      // Request admin data (no playerJoin needed for admin)
       socket.emit('requestAdminData')
-    }
 
-    return () => {
-      if (socket) {
+      // Refresh admin data every 2 seconds
+      const interval = setInterval(() => {
+        socket.emit('requestAdminData')
+      }, 2000)
+
+      return () => {
+        clearInterval(interval)
         socket.off('adminPlayersUpdate')
         socket.off('progressUpdate')
         socket.off('gameStateUpdate')
@@ -112,35 +117,35 @@ function AdminDashboard({ socket }) {
       </header>
 
       <div className={styles.controls}>
-        <button 
+        <button
           className={styles.btnStart}
           onClick={handleStartGame}
           disabled={gameState === 'active' || gameState === 'voting'}
         >
           START GAME
         </button>
-        <button 
+        <button
           className={styles.btnDanger}
           onClick={handleTriggerMeeting}
           disabled={gameState !== 'active'}
         >
           TRIGGER MEETING
         </button>
-        <button 
+        <button
           className={styles.btnVote}
           onClick={handleStartVoting}
           disabled={gameState !== 'meeting'}
         >
           START VOTING
         </button>
-        <button 
+        <button
           className={styles.btnResume}
           onClick={handleResumeGame}
           disabled={gameState !== 'voting'}
         >
           RESUME GAME
         </button>
-        <button 
+        <button
           className={styles.btnEnd}
           onClick={handleEndRound}
         >
@@ -170,7 +175,7 @@ function AdminDashboard({ socket }) {
       <div className={styles.progressSection}>
         <h2>Global Task Progress</h2>
         <div className={styles.progressBar}>
-          <div 
+          <div
             className={styles.progressFill}
             style={{ width: `${globalProgress}%` }}
           >
@@ -190,7 +195,7 @@ function AdminDashboard({ socket }) {
                 <div key={task.id} className={styles.taskPinCard}>
                   <div className={styles.taskPinInfo}>
                     <div className={styles.taskPinName}>{task.name}</div>
-                    <div className={styles.taskPinRoom}>{task.room}</div>
+                    {task.room && <div className={styles.taskPinRoom}>{task.room}</div>}
                   </div>
                   <div className={styles.taskPinValue}>{task.pin || 'N/A'}</div>
                 </div>
@@ -204,7 +209,7 @@ function AdminDashboard({ socket }) {
                 <div key={task.id} className={styles.taskPinCard}>
                   <div className={styles.taskPinInfo}>
                     <div className={styles.taskPinName}>{task.name}</div>
-                    <div className={styles.taskPinRoom}>{task.room}</div>
+                    {task.room && <div className={styles.taskPinRoom}>{task.room}</div>}
                   </div>
                   <div className={styles.taskPinValue}>{task.pin || 'N/A'}</div>
                 </div>

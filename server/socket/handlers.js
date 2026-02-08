@@ -119,6 +119,14 @@ function setupSocketHandlers(io) {
           io.emit('progressUpdate', gameState.globalProgress)
           
           socket.emit('taskVerified', { success: true, taskId })
+          
+          // Check if all tasks are complete (100%)
+          if (gameState.globalProgress >= 100) {
+            db.setGameState({ status: 'ended' })
+            stopTimer()
+            io.emit('gameStateUpdate', 'ended')
+            console.log('Game ended - All tasks completed!')
+          }
         }
       } else {
         socket.emit('taskVerified', { success: false, error: 'Invalid PIN' })
@@ -156,6 +164,14 @@ function setupSocketHandlers(io) {
           socket.emit('ghostTasksUpdate', player.tasks.filter(t => t.type === 'main'))
           io.emit('progressUpdate', gameState.globalProgress)
           socket.emit('taskVerified', { success: true, taskId })
+          
+          // Check if all tasks are complete (100%)
+          if (gameState.globalProgress >= 100) {
+            db.setGameState({ status: 'ended' })
+            stopTimer()
+            io.emit('gameStateUpdate', 'ended')
+            console.log('Game ended - All tasks completed!')
+          }
         }
       } else {
         socket.emit('taskVerified', { success: false, error: 'Invalid PIN' })
@@ -202,6 +218,18 @@ function setupSocketHandlers(io) {
       io.emit('adminPlayersUpdate', db.getAllPlayers())
 
       console.log(`${killerId} killed ${victimId}`)
+
+      // Check if imposters win (equal or outnumber crew, or eliminated all crew)
+      const allPlayers = db.getAllPlayers()
+      const aliveCrewCount = allPlayers.filter(p => p.role === 'crew' && p.status === 'alive').length
+      const aliveImposterCount = allPlayers.filter(p => p.role === 'imposter' && p.status === 'alive').length
+      
+      if (aliveImposterCount > 0 && aliveImposterCount >= aliveCrewCount) {
+        db.setGameState({ status: 'ended' })
+        stopTimer()
+        io.emit('gameStateUpdate', 'ended')
+        console.log('Game ended - Imposters win!')
+      }
     })
 
     // Request alive players (for voting)

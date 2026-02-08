@@ -22,9 +22,19 @@ function LoginScreen({ setPlayer }) {
       const data = await response.json()
 
       if (response.ok) {
-        setPlayer(data.player)
-        localStorage.setItem('playerId', data.player.id)
-        navigate('/lobby')
+        const playerData = data.player
+        setPlayer(playerData)
+        localStorage.setItem('playerId', playerData.id)
+        localStorage.setItem('playerData', JSON.stringify(playerData))
+
+        // Navigate based on game state and player status
+        if (playerData.status === 'lobby' || playerData.status === 'offline') {
+          navigate('/lobby')
+        } else if (playerData.status === 'alive' || playerData.status === 'dead') {
+          navigate('/game')
+        } else {
+          navigate('/lobby')
+        }
       } else {
         setError(data.error || 'Login failed')
       }
@@ -33,7 +43,7 @@ function LoginScreen({ setPlayer }) {
     }
   }
 
-  const playerIds = Array.from({ length: 30 }, (_, i) => {
+  const playerIds = Array.from({ length: 12 }, (_, i) => {
     const num = (i + 1).toString().padStart(2, '0')
     return `P${num}`
   })

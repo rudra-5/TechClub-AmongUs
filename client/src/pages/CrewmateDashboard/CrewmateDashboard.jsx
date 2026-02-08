@@ -18,7 +18,9 @@ function CrewmateDashboard({ player, socket, gameState }) {
   }, [gameState, navigate])
 
   useEffect(() => {
-    if (socket) {
+    if (socket && player?.id) {
+      socket.emit('playerJoin', player.id)
+
       socket.on('tasksUpdate', (updatedTasks) => {
         setTasks(updatedTasks)
       })
@@ -32,7 +34,7 @@ function CrewmateDashboard({ player, socket, gameState }) {
       })
 
       // Request initial data
-      socket.emit('requestTasks', player?.id)
+      socket.emit('requestTasks', player.id)
     }
 
     return () => {
@@ -79,7 +81,7 @@ function CrewmateDashboard({ player, socket, gameState }) {
       <div className={styles.progressSection}>
         <h3>Global Progress</h3>
         <div className={styles.progressBar}>
-          <div 
+          <div
             className={styles.progressFill}
             style={{ width: `${globalProgress}%` }}
           >

@@ -11,21 +11,27 @@ let gameState = {
 
 let players = {}
 
+// All 16 tasks — same weightage (weight: 1 each), no room
 let tasks = {
   main: [
-    { name: 'Fix Wiring', room: 'Electrical Room', weight: 5 },
-    { name: 'Download Data', room: 'Tech Lab', weight: 5 },
-    { name: 'Calibrate Systems', room: 'Control Room', weight: 5 },
-    { name: 'Empty Garbage', room: 'Cafeteria', weight: 5 },
-    { name: 'Submit Scan', room: 'Med Bay', weight: 5 }
+    { name: 'Correct Python code', weight: 1 },
+    { name: 'Binary Hangman', weight: 1 },
+    { name: 'QR scan & Follow Tech Club', weight: 1 },
+    { name: 'Circuit Puzzle', weight: 1 },
+    { name: 'Strong Password (Website)', weight: 1 },
+    { name: 'Circuit Wiring', weight: 1 },
+    { name: 'Dobot Teach & Playback', weight: 1 },
+    { name: 'Wire Fix', weight: 1 },
+    { name: 'Keyboard Speed Test', weight: 1 },
+    { name: 'Water Cup Transfer', weight: 1 },
+    { name: 'Paper Airplane Landing', weight: 1 },
+    { name: 'Cloud Storage vs Local Storage', weight: 1 },
+    { name: 'Error Finding in App Screen', weight: 1 },
+    { name: 'Sentence Decode via Emojis', weight: 1 },
+    { name: 'Fix the Keyboard', weight: 1 },
+    { name: 'Sort Balls According to their color from Ball Pit', weight: 1 }
   ],
-  filler: [
-    { name: 'Clean Filter', room: 'O2 Room', weight: 2 },
-    { name: 'Align Engine', room: 'Engine Room', weight: 2 },
-    { name: 'Prime Shields', room: 'Shields Room', weight: 2 },
-    { name: 'Fuel Engines', room: 'Storage', weight: 2 },
-    { name: 'Chart Course', room: 'Navigation', weight: 2 }
-  ]
+  filler: []
 }
 
 // PIN codes for each task (station exec codes)
@@ -39,8 +45,8 @@ let votes = {}
 
 // Initialize database
 function initializeDatabase() {
-  // Create 30 players
-  for (let i = 1; i <= 30; i++) {
+  // Create 12 players
+  for (let i = 1; i <= 12; i++) {
     const playerId = `P${i.toString().padStart(2, '0')}`
     players[playerId] = {
       id: playerId,
@@ -129,24 +135,16 @@ const db = {
     const player = players[playerId]
     if (!player) return
 
-    // Assign 2 main tasks and 3 filler tasks
-    const mainTaskIndices = getRandomIndices(tasks.main.length, 2)
-    const fillerTaskIndices = getRandomIndices(tasks.filler.length, 3)
+    // Assign 4 main tasks (all 16 tasks have equal weight; no filler)
+    const mainCount = Math.min(4, tasks.main.length)
+    const mainTaskIndices = getRandomIndices(tasks.main.length, mainCount)
 
-    const playerTasks = [
-      ...mainTaskIndices.map(i => ({
-        id: `main-${i}`,
-        type: 'main',
-        ...tasks.main[i],
-        completed: false
-      })),
-      ...fillerTaskIndices.map(i => ({
-        id: `filler-${i}`,
-        type: 'filler',
-        ...tasks.filler[i],
-        completed: false
-      }))
-    ]
+    const playerTasks = mainTaskIndices.map(i => ({
+      id: `main-${i}`,
+      type: 'main',
+      ...tasks.main[i],
+      completed: false
+    }))
 
     players[playerId].tasks = playerTasks
     players[playerId].totalTasks = playerTasks.length

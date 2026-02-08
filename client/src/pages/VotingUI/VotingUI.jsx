@@ -12,7 +12,9 @@ function VotingUI({ player, socket }) {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (socket) {
+    if (socket && player?.id) {
+      socket.emit('playerJoin', player.id)
+
       socket.on('alivePlayers', (players) => {
         setAlivePlayers(players)
       })
@@ -38,7 +40,7 @@ function VotingUI({ player, socket }) {
         socket.off('gameStateUpdate')
       }
     }
-  }, [socket, navigate])
+  }, [socket, player, navigate])
 
   const handleVote = (votedPlayerId) => {
     setSelectedPlayer(votedPlayerId)
@@ -55,7 +57,7 @@ function VotingUI({ player, socket }) {
     setHasVoted(true)
   }
 
-  const filteredPlayers = alivePlayers.filter(p => 
+  const filteredPlayers = alivePlayers.filter(p =>
     p.toLowerCase().includes(searchTerm.toLowerCase())
   )
 

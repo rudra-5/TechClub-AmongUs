@@ -22,7 +22,7 @@ function TaskList({ tasks, onTaskClick, isGhost = false }) {
           </div>
           <div className={styles.taskInfo}>
             <div className={styles.taskName}>{task.name}</div>
-            <div className={styles.taskRoom}>{task.room}</div>
+            {task.room && <div className={styles.taskRoom}>{task.room}</div>}
           </div>
           <div className={styles.taskBadge}>
             {task.type === 'main' ? '★' : ''}

@@ -6,6 +6,12 @@ function Lobby({ player, socket, gameState }) {
   const navigate = useNavigate()
 
   useEffect(() => {
+    if (socket && player?.id) {
+      socket.emit('playerJoin', player.id)
+    }
+  }, [socket, player])
+
+  useEffect(() => {
     if (gameState === 'active') {
       navigate('/game')
     }
