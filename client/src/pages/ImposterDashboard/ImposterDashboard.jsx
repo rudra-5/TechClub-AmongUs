@@ -79,7 +79,10 @@ function ImposterDashboard({ player, socket, gameState }) {
       scanner = new Html5QrcodeScanner('qr-reader', {
         fps: 10,
         qrbox: { width: 250, height: 250 },
-        facingMode: "environment" // Use back camera directly
+        facingMode: "environment", // Use back camera
+        rememberLastUsedCamera: false,
+        showTorchButtonIfSupported: true,
+        aspectRatio: 1.0
       })
 
       scanner.render(onScanSuccess, onScanError)
@@ -87,7 +90,7 @@ function ImposterDashboard({ player, socket, gameState }) {
 
     return () => {
       if (scanner) {
-        scanner.clear()
+        scanner.clear().catch(() => { }) // Ignore cleanup errors
       }
     }
   }, [showScanner])
@@ -181,15 +184,12 @@ function ImposterDashboard({ player, socket, gameState }) {
 
       {showScanner && (
         <div className={styles.scannerOverlay}>
-          <div className={styles.scannerHeader}>
-            <h2>Scan Victim's QR Code</h2>
-            <button
-              className={styles.closeBtn}
-              onClick={() => setShowScanner(false)}
-            >
-              ✕
-            </button>
-          </div>
+          <button
+            className={styles.closeBtn}
+            onClick={() => setShowScanner(false)}
+          >
+            ✕
+          </button>
           <div id="qr-reader" className={styles.qrReader}></div>
         </div>
       )}
