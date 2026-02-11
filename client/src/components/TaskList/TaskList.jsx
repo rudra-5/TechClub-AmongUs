@@ -25,7 +25,7 @@ function TaskList({ tasks, onTaskClick, isGhost = false }) {
             {task.room && <div className={styles.taskRoom}>{task.room}</div>}
           </div>
           <div className={styles.taskBadge}>
-            {task.type === 'main' ? '★' : ''}
+            {task.completed ? '✅' : '📋'}
           </div>
         </div>
       ))}

@@ -231,24 +231,10 @@
   margin-bottom: 20px;
 }
 
-.taskPinsGrid {
+.taskPinsList {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 30px;
-}
-
-.taskPinsColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.taskPinsSubtitle {
-  color: var(--cyan-bright);
-  font-size: 18px;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid var(--purple-primary);
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 12px;
 }
 
 .taskPinCard {
@@ -456,4 +442,253 @@
   font-size: 14px;
   max-width: 600px;
   margin: 0 auto;
+}
+
+/* ========== Mobile Responsive ========== */
+
+@media (max-width: 768px) {
+  .container {
+    padding: 12px;
+    padding-bottom: 60px;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .headerLeft {
+    justify-content: center;
+  }
+
+  .header h1 {
+    font-size: 20px;
+  }
+
+  .logo {
+    height: 36px;
+  }
+
+  .gameState {
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .stateBadge {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .timer {
+    font-size: 18px;
+  }
+
+  .controls {
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .controls button {
+    min-width: 0;
+    flex: 1 1 calc(50% - 10px);
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .statCard {
+    padding: 15px 10px;
+  }
+
+  .statValue {
+    font-size: 28px;
+    margin-bottom: 6px;
+  }
+
+  .statLabel {
+    font-size: 11px;
+  }
+
+  .progressSection {
+    padding: 18px;
+    margin-bottom: 20px;
+  }
+
+  .progressSection h2 {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .progressBar {
+    height: 36px;
+  }
+
+  .progressFill {
+    font-size: 16px;
+  }
+
+  .taskPinsSection {
+    padding: 18px;
+    margin-bottom: 20px;
+  }
+
+  .taskPinsSection h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+
+  .taskPinsList {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .taskPinCard {
+    padding: 12px;
+  }
+
+  .taskPinName {
+    font-size: 14px;
+  }
+
+  .taskPinRoom {
+    font-size: 12px;
+  }
+
+  .taskPinValue {
+    padding: 6px 12px;
+    font-size: 16px;
+    min-width: 68px;
+  }
+
+  .playersSection {
+    padding: 18px;
+    margin-bottom: 20px;
+  }
+
+  .playersHeader {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .playersHeader h2 {
+    font-size: 18px;
+  }
+
+  .searchInput {
+    width: 100%;
+  }
+
+  .table th,
+  .table td {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+
+  .table th {
+    font-size: 10px;
+  }
+
+  .roleBadge {
+    padding: 4px 6px;
+    font-size: 10px;
+  }
+
+  .statusBadge {
+    padding: 4px 6px;
+    font-size: 10px;
+  }
+
+  .dangerZone {
+    padding: 20px 15px;
+  }
+
+  .dangerZone h3 {
+    font-size: 16px;
+  }
+
+  .btnReset {
+    padding: 12px 30px;
+    font-size: 15px;
+  }
+
+  .warning {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 8px;
+    padding-bottom: 50px;
+  }
+
+  .header {
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+  }
+
+  .header h1 {
+    font-size: 17px;
+  }
+
+  .logo {
+    height: 30px;
+  }
+
+  .timer {
+    font-size: 16px;
+  }
+
+  .controls button {
+    flex: 1 1 100%;
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .statCard {
+    padding: 12px 8px;
+    border-radius: 8px;
+  }
+
+  .statValue {
+    font-size: 24px;
+  }
+
+  .statLabel {
+    font-size: 10px;
+  }
+
+  .progressBar {
+    height: 30px;
+  }
+
+  .progressFill {
+    font-size: 14px;
+  }
+
+  .taskPinCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .taskPinValue {
+    align-self: flex-end;
+  }
 }

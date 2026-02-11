@@ -186,35 +186,16 @@ function AdminDashboard({ socket }) {
 
       <div className={styles.taskPinsSection}>
         <h2>Task Verification PINs</h2>
-        <div className={styles.taskPinsGrid}>
-          <div className={styles.taskPinsColumn}>
-            <h3 className={styles.taskPinsSubtitle}>Main Tasks</h3>
-            {taskPins
-              .filter(task => task.type === 'main')
-              .map(task => (
-                <div key={task.id} className={styles.taskPinCard}>
-                  <div className={styles.taskPinInfo}>
-                    <div className={styles.taskPinName}>{task.name}</div>
-                    {task.room && <div className={styles.taskPinRoom}>{task.room}</div>}
-                  </div>
-                  <div className={styles.taskPinValue}>{task.pin || 'N/A'}</div>
-                </div>
-              ))}
-          </div>
-          <div className={styles.taskPinsColumn}>
-            <h3 className={styles.taskPinsSubtitle}>Filler Tasks</h3>
-            {taskPins
-              .filter(task => task.type === 'filler')
-              .map(task => (
-                <div key={task.id} className={styles.taskPinCard}>
-                  <div className={styles.taskPinInfo}>
-                    <div className={styles.taskPinName}>{task.name}</div>
-                    {task.room && <div className={styles.taskPinRoom}>{task.room}</div>}
-                  </div>
-                  <div className={styles.taskPinValue}>{task.pin || 'N/A'}</div>
-                </div>
-              ))}
-          </div>
+        <div className={styles.taskPinsList}>
+          {taskPins.map(task => (
+            <div key={task.id} className={styles.taskPinCard}>
+              <div className={styles.taskPinInfo}>
+                <div className={styles.taskPinName}>{task.name}</div>
+                {task.room && <div className={styles.taskPinRoom}>{task.room}</div>}
+              </div>
+              <div className={styles.taskPinValue}>{task.pin || 'N/A'}</div>
+            </div>
+          ))}
         </div>
       </div>
 

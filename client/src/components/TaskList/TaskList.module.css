@@ -79,3 +79,62 @@
   color: var(--ghost-grey);
   font-size: 18px;
 }
+
+/* ========== Mobile Responsive ========== */
+
+@media (max-width: 768px) {
+  .taskList {
+    gap: 10px;
+  }
+
+  .taskCard {
+    padding: 14px;
+    gap: 12px;
+    border-radius: 10px;
+  }
+
+  .taskIcon {
+    width: 34px;
+    height: 34px;
+    font-size: 20px;
+  }
+
+  .taskName {
+    font-size: 15px;
+    margin-bottom: 3px;
+  }
+
+  .taskRoom {
+    font-size: 12px;
+  }
+
+  .taskBadge {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .taskCard {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .taskIcon {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
+
+  .taskName {
+    font-size: 14px;
+  }
+
+  .taskBadge {
+    font-size: 18px;
+  }
+
+  .emptyState {
+    padding: 40px 15px;
+    font-size: 15px;
+  }
+}

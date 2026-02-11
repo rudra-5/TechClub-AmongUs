@@ -107,3 +107,106 @@
   color: var(--purple-primary);
   font-size: 24px;
 }
+
+/* ========== Mobile Responsive ========== */
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .identityBadge {
+    padding: 10px 18px;
+    font-size: 15px;
+    justify-content: center;
+  }
+
+  .ghostIcon {
+    font-size: 20px;
+  }
+
+  .timer {
+    padding: 8px 14px;
+    font-size: 16px;
+  }
+
+  .instruction {
+    margin: 12px;
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  .progressSection {
+    margin: 12px;
+    padding: 14px;
+  }
+
+  .progressSection h3 {
+    font-size: 14px;
+  }
+
+  .progressBar {
+    height: 32px;
+  }
+
+  .progressFill {
+    font-size: 15px;
+  }
+
+  .body {
+    padding: 12px;
+  }
+
+  .sectionTitle {
+    font-size: 20px;
+    margin-bottom: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 12px;
+  }
+
+  .identityBadge {
+    padding: 8px 14px;
+    font-size: 14px;
+    border-radius: 8px;
+  }
+
+  .timer {
+    padding: 6px 12px;
+    font-size: 15px;
+  }
+
+  .instruction {
+    margin: 8px;
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .progressSection {
+    margin: 8px;
+    padding: 12px;
+  }
+
+  .progressBar {
+    height: 28px;
+  }
+
+  .progressFill {
+    font-size: 13px;
+  }
+
+  .body {
+    padding: 8px;
+  }
+
+  .sectionTitle {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+}

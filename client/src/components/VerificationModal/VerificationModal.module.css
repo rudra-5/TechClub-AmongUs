@@ -27,9 +27,26 @@
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-  20%, 40%, 60%, 80% { transform: translateX(10px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-10px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(10px);
+  }
 }
 
 .header {
@@ -158,4 +175,55 @@
 
 .keypadBtn.submit:hover {
   background: var(--crewmate-green);
+}
+
+/* ========== Mobile Responsive ========== */
+
+@media (max-width: 480px) {
+  .overlay {
+    padding: 12px;
+    align-items: flex-end;
+  }
+
+  .modal {
+    padding: 20px;
+    border-radius: 16px 16px 0 0;
+    max-width: 100%;
+  }
+
+  .header h2 {
+    font-size: 18px;
+  }
+
+  .taskName {
+    font-size: 17px;
+  }
+
+  .taskRoom {
+    font-size: 14px;
+  }
+
+  .instruction {
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+
+  .pinDisplay {
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+
+  .pinDot {
+    font-size: 26px;
+  }
+
+  .keypad {
+    gap: 8px;
+  }
+
+  .keypadBtn {
+    padding: 16px;
+    font-size: 20px;
+    border-radius: 8px;
+  }
 }
