@@ -13,7 +13,10 @@ function CrewmateDashboard({ player, socket, gameState }) {
 
   useEffect(() => {
     if (gameState === 'voting') {
-      navigate('/voting')
+      navigate('/voting', { replace: true })
+    }
+    if (gameState === 'ended') {
+      navigate('/game-ended', { replace: true })
     }
   }, [gameState, navigate])
 
@@ -102,6 +105,7 @@ function CrewmateDashboard({ player, socket, gameState }) {
           onVerify={handleTaskComplete}
         />
       )}
+
     </div>
   )
 }

@@ -13,7 +13,7 @@ function Lobby({ player, socket, gameState }) {
 
   useEffect(() => {
     if (gameState === 'active') {
-      navigate('/game')
+      navigate('/game', { replace: true })
     }
   }, [gameState, navigate])
 

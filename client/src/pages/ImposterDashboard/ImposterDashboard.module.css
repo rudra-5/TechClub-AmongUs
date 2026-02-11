@@ -1,16 +1,16 @@
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--imposter-red) 0%, var(--black-soft) 100%);
+  background: linear-gradient(135deg, var(--crewmate-blue) 0%, var(--black-soft) 100%);
   padding-bottom: 100px;
 }
 
 .header {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3);
   padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 3px solid var(--imposter-red);
+  border-bottom: 3px solid var(--crewmate-blue);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -18,7 +18,7 @@
 }
 
 .identityBadge {
-  background: var(--imposter-red);
+  background: var(--crewmate-blue);
   color: white;
   padding: 12px 24px;
   border-radius: 10px;
@@ -95,13 +95,13 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: var(--imposter-red);
+  background: #444;
   color: white;
-  border: none;
+  border: 2px solid #666;
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 6px 20px rgba(230, 57, 70, 0.6);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -113,7 +113,7 @@
 
 .killButton:hover:not(.cooldown) {
   transform: scale(1.1);
-  box-shadow: 0 8px 30px rgba(230, 57, 70, 0.8);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
 }
 
 .killButton:active:not(.cooldown) {
@@ -161,7 +161,7 @@
 }
 
 .closeBtn {
-  background: var(--imposter-red);
+  background: #555;
   color: white;
   border: none;
   width: 40px;
@@ -188,6 +188,72 @@
   justify-content: center;
   color: var(--purple-primary);
   font-size: 24px;
+}
+
+.notification {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notificationContent {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.notificationIcon {
+  font-size: 60px;
+  margin-bottom: 20px;
+}
+
+.notificationContent h2 {
+  color: white;
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.notificationContent p {
+  color: var(--lavender-light);
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+.notificationBtn {
+  padding: 12px 32px;
+  background: var(--crewmate-blue);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.notificationBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.friendlyFireNotification .notificationContent {
+  border-color: var(--cyan-bright);
+}
+
+.friendlyFireNotification .notificationContent h2 {
+  color: var(--cyan-bright);
 }
 
 /* ========== Mobile Responsive ========== */

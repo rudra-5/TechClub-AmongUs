@@ -35,7 +35,7 @@ function setupSocketHandlers(io) {
   const killCooldownTimers = {}
 
   function startKillCooldown(playerId) {
-    const cooldownDuration = 300 // 5 minutes in seconds
+    const cooldownDuration = 180 // 3 minutes in seconds
     db.setKillCooldown(playerId, cooldownDuration)
 
     if (killCooldownTimers[playerId]) {
@@ -71,6 +71,17 @@ function setupSocketHandlers(io) {
         socket.emit('progressUpdate', gameState.globalProgress)
 
         console.log(`Player ${playerId} joined`)
+      }
+    })
+
+    // Request full player data (for role verification)
+    socket.on('requestPlayerData', (playerId) => {
+      const player = db.getPlayer(playerId)
+      if (player) {
+        socket.emit('playerUpdate', {
+          role: player.role,
+          status: player.status
+        })
       }
     })
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import TaskList from '../../components/TaskList/TaskList'
 import VerificationModal from '../../components/VerificationModal/VerificationModal'
 import styles from './GhostDashboard.module.css'
@@ -8,6 +9,13 @@ function GhostDashboard({ player, socket, gameState }) {
   const [globalProgress, setGlobalProgress] = useState(0)
   const [timeRemaining, setTimeRemaining] = useState(1800)
   const [selectedTask, setSelectedTask] = useState(null)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (gameState === 'ended') {
+      navigate('/game-ended', { replace: true })
+    }
+  }, [gameState, navigate])
 
   useEffect(() => {
     if (socket && player?.id) {

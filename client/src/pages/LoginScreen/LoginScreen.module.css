@@ -85,6 +85,11 @@
   color: white;
 }
 
+.select option:disabled {
+  color: #666;
+  background: #2a2a3e;
+}
+
 .error {
   background: rgba(230, 57, 70, 0.2);
   border: 1px solid var(--imposter-red);

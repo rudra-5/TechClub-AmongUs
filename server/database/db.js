@@ -135,8 +135,8 @@ const db = {
     const player = players[playerId]
     if (!player) return
 
-    // Assign 4 main tasks (all 16 tasks have equal weight; no filler)
-    const mainCount = Math.min(4, tasks.main.length)
+    // Assign 10 main tasks (all 16 tasks have equal weight; no filler)
+    const mainCount = Math.min(10, tasks.main.length)
     const mainTaskIndices = getRandomIndices(tasks.main.length, mainCount)
 
     const playerTasks = mainTaskIndices.map(i => ({
@@ -216,8 +216,9 @@ function getRandomIndices(max, count) {
 }
 
 function calculateGlobalProgress() {
-  const allPlayers = Object.values(players).filter(p => p.status !== 'offline')
-  if (allPlayers.length === 0) {
+  // Only count crew (and ghost) tasks — imposters have fake tasks that shouldn't affect progress
+  const crewPlayers = Object.values(players).filter(p => p.status !== 'offline' && p.role !== 'imposter')
+  if (crewPlayers.length === 0) {
     gameState.globalProgress = 0
     return
   }
@@ -225,7 +226,7 @@ function calculateGlobalProgress() {
   let totalWeight = 0
   let completedWeight = 0
 
-  allPlayers.forEach(player => {
+  crewPlayers.forEach(player => {
     player.tasks.forEach(task => {
       totalWeight += task.weight
       if (task.completed) {

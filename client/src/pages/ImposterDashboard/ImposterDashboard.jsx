@@ -13,11 +13,15 @@ function ImposterDashboard({ player, socket, gameState }) {
   const [teammates, setTeammates] = useState([])
   const [showScanner, setShowScanner] = useState(false)
   const [selectedTask, setSelectedTask] = useState(null)
+  const [killNotification, setKillNotification] = useState(null) // { type: 'success' | 'friendly', victimId }
   const navigate = useNavigate()
 
   useEffect(() => {
     if (gameState === 'voting') {
-      navigate('/voting')
+      navigate('/voting', { replace: true })
+    }
+    if (gameState === 'ended') {
+      navigate('/game-ended', { replace: true })
     }
   }, [gameState, navigate])
 
@@ -45,6 +49,14 @@ function ImposterDashboard({ player, socket, gameState }) {
         setTeammates(imposterTeam)
       })
 
+      socket.on('killResult', (result) => {
+        if (result.success) {
+          setKillNotification({ type: 'success', victimId: result.victimId })
+        } else if (result.error && result.error.includes('FRIENDLY FIRE')) {
+          setKillNotification({ type: 'friendly', victimId: null })
+        }
+      })
+
       socket.emit('requestTasks', player.id)
       socket.emit('requestTeammates', player.id)
     }
@@ -56,6 +68,7 @@ function ImposterDashboard({ player, socket, gameState }) {
         socket.off('timerUpdate')
         socket.off('killCooldownUpdate')
         socket.off('teammatesUpdate')
+        socket.off('killResult')
       }
     }
   }, [socket, player])
@@ -187,6 +200,38 @@ function ImposterDashboard({ player, socket, gameState }) {
           onClose={() => setSelectedTask(null)}
           onVerify={handleTaskComplete}
         />
+      )}
+
+      {killNotification && killNotification.type === 'success' && (
+        <div className={styles.notification}>
+          <div className={styles.notificationContent}>
+            <div className={styles.notificationIcon}>💀</div>
+            <h2>Kill Confirmed</h2>
+            <p><strong>{killNotification.victimId}</strong> has been eliminated.</p>
+            <button
+              className={styles.notificationBtn}
+              onClick={() => setKillNotification(null)}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
+
+      {killNotification && killNotification.type === 'friendly' && (
+        <div className={`${styles.notification} ${styles.friendlyFireNotification}`}>
+          <div className={styles.notificationContent}>
+            <div className={styles.notificationIcon}>🛡️</div>
+            <h2>Cannot Kill Ally!</h2>
+            <p>This player is a fellow imposter. You cannot eliminate your own teammate.</p>
+            <button
+              className={styles.notificationBtn}
+              onClick={() => setKillNotification(null)}
+            >
+              OK
+            </button>
+          </div>
+        </div>
       )}
     </div>
   )

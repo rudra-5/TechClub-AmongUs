@@ -26,7 +26,10 @@ function VotingUI({ player, socket }) {
 
       socket.on('gameStateUpdate', (state) => {
         if (state === 'active') {
-          navigate('/game')
+          navigate('/game', { replace: true })
+        }
+        if (state === 'ended') {
+          navigate('/game-ended', { replace: true })
         }
       })
 
