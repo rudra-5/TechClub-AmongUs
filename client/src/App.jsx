@@ -18,10 +18,10 @@ function getPlayerRoute(player, gameStatus) {
   if (gameStatus === 'ended') {
     return '/game-ended'
   }
-  if (gameStatus === 'active' || gameStatus === 'meeting') {
+  if (gameStatus === 'active') {
     return '/game'
   }
-  if (gameStatus === 'voting') {
+  if (gameStatus === 'meeting' || gameStatus === 'voting') {
     return '/voting'
   }
   // waiting — go to lobby
@@ -68,13 +68,15 @@ function AppRoutes({ socket, player, setPlayer, gameState, setGameState, session
     }
   }, [sessionLoaded]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // When a logged-in player navigates back to "/", redirect them
+  // Centralized navigation guard — ensures the player is always on the correct route
   useEffect(() => {
-    if (player && location.pathname === '/') {
-      const targetRoute = getPlayerRoute(player, gameState)
+    if (!player) return
+    const targetRoute = getPlayerRoute(player, gameState)
+    // Don't redirect if already on the correct route, or if on admin page
+    if (location.pathname !== targetRoute && location.pathname !== '/admin') {
       navigate(targetRoute, { replace: true })
     }
-  }, [player, location.pathname, gameState, navigate])
+  }, [player, gameState, navigate, location.pathname])
 
   // Re-verify player role from server when entering the game page to prevent stale role data
   useEffect(() => {
@@ -104,7 +106,7 @@ function AppRoutes({ socket, player, setPlayer, gameState, setGameState, session
         player ? <GameEnded player={player} socket={socket} gameState={gameState} /> : <Navigate to="/" replace />
       } />
       <Route path="/voting" element={
-        player ? <VotingUI player={player} socket={socket} /> : <Navigate to="/" replace />
+        player ? <VotingUI player={player} socket={socket} gameState={gameState} /> : <Navigate to="/" replace />
       } />
       <Route path="/admin" element={<AdminDashboard socket={socket} />} />
       <Route path="*" element={<Navigate to="/" replace />} />
@@ -169,6 +171,15 @@ function App() {
 
     return () => newSocket.close()
   }, [])
+
+  // Periodic game state sync — safety net for missed socket events
+  useEffect(() => {
+    if (!socket) return
+    const interval = setInterval(() => {
+      socket.emit('requestGameState')
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [socket])
 
   return (
     <Router>

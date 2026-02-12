@@ -143,38 +143,71 @@
   bottom: 0;
   background: #000;
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .closeBtn {
   position: absolute;
-  top: 20px;
+  top: env(safe-area-inset-top, 20px);
   right: 20px;
-  background: rgba(0, 0, 0, 0.7);
+  margin-top: 20px;
+  background: rgba(0, 0, 0, 0.6);
   color: white;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  width: 50px;
-  height: 50px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  font-size: 28px;
+  font-size: 24px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1001;
-  transition: all 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.closeBtn:hover {
-  background: rgba(0, 0, 0, 0.9);
-  border-color: white;
+.closeBtn:active {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 .qrReader {
   width: 100%;
   height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
+}
+
+/* Hide all library-generated UI chrome — only keep the video */
+.qrReader :global(#qr-shaded-region) {
+  border: none !important;
+}
+
+.qrReader :global(video) {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border: none !important;
+}
+
+.qrReader :global(img) {
+  display: none !important;
+}
+
+.scannerHint {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  font-weight: 500;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  pointer-events: none;
 }
 
 .loading {
@@ -386,5 +419,10 @@
     width: 40px;
     height: 40px;
     font-size: 20px;
+  }
+
+  .scannerHint {
+    font-size: 14px;
+    padding: 20px;
   }
 }

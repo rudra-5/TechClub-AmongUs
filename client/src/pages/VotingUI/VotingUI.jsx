@@ -2,14 +2,26 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './VotingUI.module.css'
 
-function VotingUI({ player, socket }) {
+function VotingUI({ player, socket, gameState }) {
   const [alivePlayers, setAlivePlayers] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedPlayer, setSelectedPlayer] = useState(null)
   const [hasVoted, setHasVoted] = useState(false)
-  const [timeRemaining, setTimeRemaining] = useState(60)
-  const [votingOpen, setVotingOpen] = useState(false)
+  const [votingTimeRemaining, setVotingTimeRemaining] = useState(60)
   const navigate = useNavigate()
+
+  const isMeeting = gameState === 'meeting'
+  const isVoting = gameState === 'voting'
+
+  // Navigate based on gameState prop (not socket listener, to avoid removing App.jsx's listener)
+  useEffect(() => {
+    if (gameState === 'active') {
+      navigate('/game', { replace: true })
+    }
+    if (gameState === 'ended') {
+      navigate('/game-ended', { replace: true })
+    }
+  }, [gameState, navigate])
 
   useEffect(() => {
     if (socket && player?.id) {
@@ -20,17 +32,7 @@ function VotingUI({ player, socket }) {
       })
 
       socket.on('votingTimer', (time) => {
-        setTimeRemaining(time)
-        setVotingOpen(time <= 20) // Voting opens after 40 seconds
-      })
-
-      socket.on('gameStateUpdate', (state) => {
-        if (state === 'active') {
-          navigate('/game', { replace: true })
-        }
-        if (state === 'ended') {
-          navigate('/game-ended', { replace: true })
-        }
+        setVotingTimeRemaining(time)
       })
 
       socket.emit('requestAlivePlayers')
@@ -40,10 +42,17 @@ function VotingUI({ player, socket }) {
       if (socket) {
         socket.off('alivePlayers')
         socket.off('votingTimer')
-        socket.off('gameStateUpdate')
       }
     }
-  }, [socket, player, navigate])
+  }, [socket, player])
+
+  // Reset vote state when transitioning from meeting to voting
+  useEffect(() => {
+    if (isVoting) {
+      setHasVoted(false)
+      setSelectedPlayer(null)
+    }
+  }, [isVoting])
 
   const handleVote = (votedPlayerId) => {
     setSelectedPlayer(votedPlayerId)
@@ -68,14 +77,17 @@ function VotingUI({ player, socket }) {
     return <div className={styles.loading}>Loading...</div>
   }
 
+  // Dead players see a waiting screen
   if (player.status === 'dead') {
     return (
       <div className={styles.container}>
         <div className={styles.header}>
           <h1>EMERGENCY MEETING</h1>
-          <div className={styles.timer}>
-            {timeRemaining}s
-          </div>
+          {isVoting && (
+            <div className={styles.timer}>
+              {votingTimeRemaining}s
+            </div>
+          )}
         </div>
         <div className={styles.deadMessage}>
           <span className={styles.ghostIcon}>👻</span>
@@ -86,13 +98,30 @@ function VotingUI({ player, socket }) {
     )
   }
 
+  // MEETING phase — discussion, waiting for admin to start voting
+  if (isMeeting) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h1>EMERGENCY MEETING</h1>
+        </div>
+        <div className={styles.discussionPhase}>
+          <div className={styles.discussIcon}>💬</div>
+          <h2>Discussion Phase</h2>
+          <p>Discuss with your team. Voting will be opened by the host.</p>
+        </div>
+      </div>
+    )
+  }
+
+  // VOTING phase — already voted
   if (hasVoted) {
     return (
       <div className={styles.container}>
         <div className={styles.header}>
           <h1>EMERGENCY MEETING</h1>
           <div className={styles.timer}>
-            {timeRemaining}s
+            {votingTimeRemaining}s
           </div>
         </div>
         <div className={styles.waitingMessage}>
@@ -104,53 +133,44 @@ function VotingUI({ player, socket }) {
     )
   }
 
+  // VOTING phase — cast your vote
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h1>EMERGENCY MEETING</h1>
         <div className={styles.timer}>
-          {timeRemaining}s
+          {votingTimeRemaining}s
         </div>
       </div>
 
-      {!votingOpen ? (
-        <div className={styles.discussionPhase}>
-          <h2>Discussion Phase</h2>
-          <p>Voting will open in {timeRemaining - 20} seconds</p>
-          <div className={styles.discussIcon}>💬</div>
-        </div>
-      ) : (
-        <>
-          <div className={styles.searchContainer}>
-            <input
-              type="text"
-              placeholder="Search player..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className={styles.searchInput}
-            />
-          </div>
+      <div className={styles.searchContainer}>
+        <input
+          type="text"
+          placeholder="Search player..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className={styles.searchInput}
+        />
+      </div>
 
-          <div className={styles.playerGrid}>
-            {filteredPlayers.map(playerId => (
-              <button
-                key={playerId}
-                className={`${styles.playerButton} ${playerId === player.id ? styles.self : ''}`}
-                onClick={() => handleVote(playerId)}
-              >
-                {playerId}
-                {playerId === player.id && <span className={styles.youTag}>YOU</span>}
-              </button>
-            ))}
-          </div>
+      <div className={styles.playerGrid}>
+        {filteredPlayers.map(playerId => (
+          <button
+            key={playerId}
+            className={`${styles.playerButton} ${playerId === player.id ? styles.self : ''}`}
+            onClick={() => handleVote(playerId)}
+          >
+            {playerId}
+            {playerId === player.id && <span className={styles.youTag}>YOU</span>}
+          </button>
+        ))}
+      </div>
 
-          <div className={styles.actionButtons}>
-            <button className={styles.skipButton} onClick={handleSkip}>
-              SKIP VOTE
-            </button>
-          </div>
-        </>
-      )}
+      <div className={styles.actionButtons}>
+        <button className={styles.skipButton} onClick={handleSkip}>
+          SKIP VOTE
+        </button>
+      </div>
 
       {selectedPlayer && (
         <div className={styles.confirmOverlay}>

@@ -1,6 +1,18 @@
 const db = require('../database/db')
 
 function setupSocketHandlers(io) {
+  // Helper: tally votes into sorted array
+  function tallyVotes(votes) {
+    const counts = {}
+    Object.values(votes).forEach(votedFor => {
+      counts[votedFor] = (counts[votedFor] || 0) + 1
+    })
+    // Return sorted array: [{ playerId, votes }, ...]
+    return Object.entries(counts)
+      .map(([playerId, voteCount]) => ({ playerId, votes: voteCount }))
+      .sort((a, b) => b.votes - a.votes)
+  }
+
   // Timer management
   let timerInterval = null
 
@@ -14,6 +26,11 @@ function setupSocketHandlers(io) {
         if (gameState.timeRemaining > 0) {
           db.setGameState({ timeRemaining: gameState.timeRemaining - 1 })
           io.emit('timerUpdate', gameState.timeRemaining - 1)
+
+          // Sync progress to all clients every 5 seconds
+          if (gameState.timeRemaining % 5 === 0) {
+            io.emit('progressUpdate', gameState.globalProgress)
+          }
         } else {
           // Time's up
           db.setGameState({ status: 'ended' })
@@ -56,6 +73,12 @@ function setupSocketHandlers(io) {
 
   io.on('connection', (socket) => {
     console.log('Client connected:', socket.id)
+
+    // Lightweight game state poll (used by clients as a sync safety net)
+    socket.on('requestGameState', () => {
+      const gameState = db.getGameState()
+      socket.emit('gameStateUpdate', gameState.status)
+    })
 
     // Player joins with their ID
     socket.on('playerJoin', (playerId) => {
@@ -256,9 +279,54 @@ function setupSocketHandlers(io) {
       db.castVote(voterId, votedFor)
       socket.emit('voteConfirmed', { votedFor })
       
-      // Notify admin of vote count
+      // Tally votes and send results to admin
       const votes = db.getVotes()
+      const tally = tallyVotes(votes)
       io.emit('voteUpdate', { totalVotes: Object.keys(votes).length })
+      io.emit('voteResultsUpdate', tally)
+    })
+
+    // Admin: request vote results
+    socket.on('requestVoteResults', () => {
+      const votes = db.getVotes()
+      const tally = tallyVotes(votes)
+      socket.emit('voteResultsUpdate', tally)
+    })
+
+    // Admin: eject a player (turn them into a ghost)
+    socket.on('ejectPlayer', (playerId) => {
+      const player = db.getPlayer(playerId)
+      if (!player || player.status !== 'alive') return
+
+      db.updatePlayer(playerId, { status: 'dead' })
+
+      // Notify the ejected player
+      io.to(playerId).emit('playerUpdate', { status: 'dead' })
+
+      // Broadcast updated player list to admin
+      io.emit('adminPlayersUpdate', db.getAllPlayers())
+
+      console.log(`${playerId} was ejected by vote`)
+
+      // Check win conditions
+      const allPlayers = db.getAllPlayers()
+      const aliveCrewCount = allPlayers.filter(p => p.role === 'crew' && p.status === 'alive').length
+      const aliveImposterCount = allPlayers.filter(p => p.role === 'imposter' && p.status === 'alive').length
+
+      // If all imposters are dead, crew wins
+      if (aliveImposterCount === 0) {
+        db.setGameState({ status: 'ended' })
+        stopTimer()
+        io.emit('gameStateUpdate', 'ended')
+        console.log('Game ended - All imposters ejected! Crew wins!')
+      }
+      // If imposters >= crew, imposters win
+      else if (aliveImposterCount >= aliveCrewCount) {
+        db.setGameState({ status: 'ended' })
+        stopTimer()
+        io.emit('gameStateUpdate', 'ended')
+        console.log('Game ended - Imposters outnumber crew!')
+      }
     })
 
     // Admin: request all data
@@ -266,12 +334,15 @@ function setupSocketHandlers(io) {
       const players = db.getAllPlayers()
       const gameState = db.getGameState()
       const taskPins = db.getAllTaskPins()
+      const votes = db.getVotes()
+      const tally = tallyVotes(votes)
       
       socket.emit('adminPlayersUpdate', players)
       socket.emit('gameStateUpdate', gameState.status)
       socket.emit('progressUpdate', gameState.globalProgress)
       socket.emit('timerUpdate', gameState.timeRemaining)
       socket.emit('taskPinsUpdate', taskPins)
+      socket.emit('voteResultsUpdate', tally)
     })
 
     // Admin: start game

@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Html5QrcodeScanner } from 'html5-qrcode'
+import { Html5Qrcode } from 'html5-qrcode'
 import TaskList from '../../components/TaskList/TaskList'
 import VerificationModal from '../../components/VerificationModal/VerificationModal'
 import styles from './ImposterDashboard.module.css'
@@ -14,10 +14,12 @@ function ImposterDashboard({ player, socket, gameState }) {
   const [showScanner, setShowScanner] = useState(false)
   const [selectedTask, setSelectedTask] = useState(null)
   const [killNotification, setKillNotification] = useState(null) // { type: 'success' | 'friendly', victimId }
+  const scannerRef = useRef(null)
+  const scannedRef = useRef(false)
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (gameState === 'voting') {
+    if (gameState === 'meeting' || gameState === 'voting') {
       navigate('/voting', { replace: true })
     }
     if (gameState === 'ended') {
@@ -73,35 +75,57 @@ function ImposterDashboard({ player, socket, gameState }) {
     }
   }, [socket, player])
 
-  useEffect(() => {
-    let scanner
-    if (showScanner) {
-      scanner = new Html5QrcodeScanner('qr-reader', {
-        fps: 10,
-        qrbox: { width: 250, height: 250 },
-        facingMode: "environment", // Use back camera
-        rememberLastUsedCamera: false,
-        showTorchButtonIfSupported: true,
-        aspectRatio: 1.0
-      })
-
-      scanner.render(onScanSuccess, onScanError)
+  const stopScanner = useCallback(async () => {
+    if (scannerRef.current) {
+      try {
+        const state = scannerRef.current.getState()
+        if (state === 2) { // SCANNING
+          await scannerRef.current.stop()
+        }
+      } catch (e) {
+        // Ignore stop errors
+      }
+      scannerRef.current = null
     }
+  }, [])
+
+  useEffect(() => {
+    if (!showScanner) return
+
+    scannedRef.current = false
+    const html5Qrcode = new Html5Qrcode('qr-reader')
+    scannerRef.current = html5Qrcode
+
+    html5Qrcode.start(
+      { facingMode: 'environment' },
+      { fps: 10, qrbox: { width: 250, height: 250 } },
+      (decodedText) => {
+        // Prevent double-scan
+        if (scannedRef.current) return
+        scannedRef.current = true
+
+        socket.emit('attemptKill', { killerId: player.id, victimId: decodedText })
+
+        // Stop camera then close overlay
+        html5Qrcode.stop().catch(() => { }).finally(() => {
+          scannerRef.current = null
+          setShowScanner(false)
+        })
+      },
+      () => { } // Ignore per-frame scan errors
+    ).catch((err) => {
+      console.error('Camera start failed:', err)
+      setShowScanner(false)
+    })
 
     return () => {
-      if (scanner) {
-        scanner.clear().catch(() => { }) // Ignore cleanup errors
-      }
+      stopScanner()
     }
-  }, [showScanner])
+  }, [showScanner, socket, player?.id, stopScanner])
 
-  const onScanSuccess = (decodedText) => {
-    socket.emit('attemptKill', { killerId: player.id, victimId: decodedText })
+  const handleCloseScanner = async () => {
+    await stopScanner()
     setShowScanner(false)
-  }
-
-  const onScanError = (error) => {
-    // Ignore scan errors
   }
 
   const handleKillClick = () => {
@@ -186,11 +210,12 @@ function ImposterDashboard({ player, socket, gameState }) {
         <div className={styles.scannerOverlay}>
           <button
             className={styles.closeBtn}
-            onClick={() => setShowScanner(false)}
+            onClick={handleCloseScanner}
           >
             ✕
           </button>
           <div id="qr-reader" className={styles.qrReader}></div>
+          <div className={styles.scannerHint}>Point camera at player's QR code</div>
         </div>
       )}
 

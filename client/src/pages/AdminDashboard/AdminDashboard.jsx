@@ -8,6 +8,7 @@ function AdminDashboard({ socket }) {
   const [timeRemaining, setTimeRemaining] = useState(1800)
   const [searchTerm, setSearchTerm] = useState('')
   const [taskPins, setTaskPins] = useState([])
+  const [voteResults, setVoteResults] = useState([])
 
   useEffect(() => {
     if (socket) {
@@ -31,6 +32,10 @@ function AdminDashboard({ socket }) {
         setTaskPins(pins)
       })
 
+      socket.on('voteResultsUpdate', (results) => {
+        setVoteResults(results)
+      })
+
       // Request admin data (no playerJoin needed for admin)
       socket.emit('requestAdminData')
 
@@ -46,6 +51,7 @@ function AdminDashboard({ socket }) {
         socket.off('gameStateUpdate')
         socket.off('timerUpdate')
         socket.off('taskPinsUpdate')
+        socket.off('voteResultsUpdate')
       }
     }
   }, [socket])
@@ -57,19 +63,27 @@ function AdminDashboard({ socket }) {
   }
 
   const handleTriggerMeeting = () => {
-    if (window.confirm('Trigger emergency meeting? This will pause the game.')) {
+    if (window.confirm('Trigger emergency meeting? All players will be pulled into the meeting screen for discussion.')) {
       socket.emit('triggerMeeting')
     }
   }
 
   const handleStartVoting = () => {
-    if (window.confirm('Open voting? All players will be able to vote.')) {
+    if (window.confirm('Open voting? Players will be able to cast their votes.')) {
       socket.emit('startVoting')
     }
   }
 
   const handleResumeGame = () => {
     socket.emit('resumeGame')
+  }
+
+  const handleEjectPlayer = (playerId) => {
+    const player = players.find(p => p.id === playerId)
+    const roleLabel = player?.role === 'imposter' ? '🔪 IMPOSTER' : '👤 CREW'
+    if (window.confirm(`Eject ${playerId}? They are: ${roleLabel}. They will become a ghost.`)) {
+      socket.emit('ejectPlayer', playerId)
+    }
   }
 
   const handleEndRound = () => {
@@ -129,14 +143,14 @@ function AdminDashboard({ socket }) {
           onClick={handleTriggerMeeting}
           disabled={gameState !== 'active'}
         >
-          TRIGGER MEETING
+          CALL MEETING
         </button>
         <button
           className={styles.btnVote}
           onClick={handleStartVoting}
           disabled={gameState !== 'meeting'}
         >
-          START VOTING
+          OPEN VOTING
         </button>
         <button
           className={styles.btnResume}
@@ -152,6 +166,53 @@ function AdminDashboard({ socket }) {
           FINISH GAME
         </button>
       </div>
+
+      {(gameState === 'meeting' || gameState === 'voting') && (
+        <div className={styles.voteResultsSection}>
+          <h2>Vote Results</h2>
+          {voteResults.length === 0 ? (
+            <p className={styles.noVotes}>
+              {gameState === 'meeting' ? 'Voting has not started yet.' : 'No votes cast yet.'}
+            </p>
+          ) : (
+            <div className={styles.voteResultsList}>
+              {voteResults.map(({ playerId, votes }) => {
+                const targetPlayer = players.find(p => p.id === playerId)
+                const isSkip = playerId === 'skip'
+                const isAlive = targetPlayer?.status === 'alive'
+                return (
+                  <div key={playerId} className={styles.voteResultCard}>
+                    <div className={styles.voteResultInfo}>
+                      <span className={styles.voteResultName}>
+                        {isSkip ? '⏭️ SKIP' : playerId}
+                      </span>
+                      {!isSkip && targetPlayer && (
+                        <span className={`${styles.roleBadge} ${styles[targetPlayer.role]}`}>
+                          {targetPlayer.role === 'imposter' ? '🔪' : '👤'} {targetPlayer.role}
+                        </span>
+                      )}
+                    </div>
+                    <div className={styles.voteResultRight}>
+                      <span className={styles.voteCount}>{votes} vote{votes !== 1 ? 's' : ''}</span>
+                      {!isSkip && isAlive && (
+                        <button
+                          className={styles.ejectBtn}
+                          onClick={() => handleEjectPlayer(playerId)}
+                        >
+                          EJECT
+                        </button>
+                      )}
+                      {!isSkip && !isAlive && (
+                        <span className={styles.ejectedTag}>DEAD</span>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       <div className={styles.stats}>
         <div className={styles.statCard}>

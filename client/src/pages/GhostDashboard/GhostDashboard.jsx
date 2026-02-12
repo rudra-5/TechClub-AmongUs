@@ -12,6 +12,9 @@ function GhostDashboard({ player, socket, gameState }) {
   const navigate = useNavigate()
 
   useEffect(() => {
+    if (gameState === 'meeting' || gameState === 'voting') {
+      navigate('/voting', { replace: true })
+    }
     if (gameState === 'ended') {
       navigate('/game-ended', { replace: true })
     }

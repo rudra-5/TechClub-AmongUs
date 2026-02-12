@@ -404,6 +404,102 @@
   color: white;
 }
 
+.voteResultsSection {
+  background: rgba(151, 125, 255, 0.1);
+  border: 2px solid var(--purple-primary);
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 30px;
+}
+
+.voteResultsSection h2 {
+  color: var(--purple-primary);
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+.noVotes {
+  color: var(--lavender-light);
+  font-size: 16px;
+  text-align: center;
+  padding: 20px;
+  opacity: 0.7;
+}
+
+.voteResultsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.voteResultCard {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.voteResultCard:first-child {
+  border-color: var(--purple-primary);
+  background: rgba(151, 125, 255, 0.1);
+}
+
+.voteResultInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.voteResultName {
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.voteResultRight {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.voteCount {
+  color: var(--cyan-bright);
+  font-size: 18px;
+  font-weight: bold;
+  min-width: 70px;
+  text-align: right;
+}
+
+.ejectBtn {
+  background: var(--imposter-red);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.ejectBtn:hover {
+  background: #d32f2f;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(230, 57, 70, 0.5);
+}
+
+.ejectedTag {
+  color: var(--ghost-grey);
+  font-size: 13px;
+  font-weight: bold;
+  padding: 6px 14px;
+  background: rgba(156, 163, 175, 0.2);
+  border-radius: 6px;
+}
+
 .dangerZone {
   background: rgba(230, 57, 70, 0.1);
   border: 2px solid var(--imposter-red);
@@ -622,6 +718,35 @@
   }
 
   .warning {
+    font-size: 12px;
+  }
+
+  .voteResultsSection {
+    padding: 18px;
+    margin-bottom: 20px;
+  }
+
+  .voteResultsSection h2 {
+    font-size: 18px;
+  }
+
+  .voteResultCard {
+    padding: 12px 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .voteResultName {
+    font-size: 15px;
+  }
+
+  .voteCount {
+    font-size: 15px;
+    min-width: auto;
+  }
+
+  .ejectBtn {
+    padding: 6px 14px;
     font-size: 12px;
   }
 }
